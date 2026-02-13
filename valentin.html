@@ -112,8 +112,11 @@ button {
 #no {
     background: linear-gradient(135deg, #888, #aaa);
     color: white;
-    position: absolute;
-    top: 0;
+}
+
+#no.moving {
+    position: fixed;
+    transition: all 0.3s ease;
 }
 
 #no:hover {
@@ -213,11 +216,38 @@ button {
 
         // Mover el botón "No" cuando se acerquen
         function moveNoButton() {
-            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+            // Hacer que el botón sea posicionable la primera vez
+            if (!noBtn.classList.contains('moving')) {
+                noBtn.classList.add('moving');
+                const rect = noBtn.getBoundingClientRect();
+                noBtn.style.left = rect.left + "px";
+                noBtn.style.top = rect.top + "px";
+            }
             
-            const x = Math.random() * maxX;
-            const y = Math.random() * maxY;
+            const yesBtnRect = yesBtn.getBoundingClientRect();
+            let x, y;
+            let attempts = 0;
+            
+            // Intentar encontrar una posición que no tape el botón "Sí"
+            do {
+                const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+                const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+                
+                x = Math.max(10, Math.random() * maxX);
+                y = Math.max(10, Math.random() * maxY);
+                attempts++;
+                
+                // Verificar si la nueva posición NO se solapa con el botón "Sí"
+                const wouldOverlap = !(
+                    x > yesBtnRect.right + 10 ||
+                    x + noBtn.offsetWidth < yesBtnRect.left - 10 ||
+                    y > yesBtnRect.bottom + 10 ||
+                    y + noBtn.offsetHeight < yesBtnRect.top - 10
+                );
+                
+                if (!wouldOverlap) break;
+                
+            } while (attempts < 20);
             
             noBtn.style.left = x + "px";
             noBtn.style.top = y + "px";
