@@ -2,101 +2,276 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¿Quieres ser mi San Valentín?</title>
-
     <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    background: linear-gradient(to right, #ff9a9e, #fad0c4);
+    background: linear-gradient(135deg, #000000 0%, #2d1b4e 50%, #6b2d5c 100%);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    font-family: 'Georgia', serif;
     text-align: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Estrellas de fondo */
+.stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
 
-.container {
+.star {
+    position: absolute;
     background: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0px 10px 25px rgba(0,0,0,0.2);
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 50px 40px;
+    border-radius: 30px;
+    box-shadow: 0px 20px 60px rgba(255, 105, 180, 0.4);
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    z-index: 10;
+    border: 3px solid rgba(255, 105, 180, 0.3);
 }
 
 h1 {
-    color: #ff4b5c;
+    background: linear-gradient(45deg, #ff1493, #ff69b4, #da70d6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 2em;
+    margin-bottom: 15px;
+    line-height: 1.4;
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.1em;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    min-height: 80px;
 }
 
 button {
-    padding: 15px 30px;
-    margin: 15px;
-    font-size: 18px;
+    padding: 18px 40px;
+    font-size: 20px;
     border: none;
-    border-radius: 10px;
+    border-radius: 50px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    font-family: 'Georgia', serif;
 }
 
 #yes {
-    background-color: #ff4b5c;
+    background: linear-gradient(135deg, #ff1493, #ff69b4);
     color: white;
 }
 
+#yes:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4);
+}
+
 #no {
-    background-color: gray;
+    background: linear-gradient(135deg, #888, #aaa);
     color: white;
     position: absolute;
+    top: 0;
+}
+
+#no:hover {
+    background: linear-gradient(135deg, #666, #888);
 }
 
 .heart {
     position: absolute;
-    color: red;
-    font-size: 20px;
-    animation: float 3s linear infinite;
+    color: #ff1493;
+    font-size: 30px;
+    animation: float 4s linear infinite;
+    pointer-events: none;
 }
 
 @keyframes float {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-800px); opacity: 0; }
+    0% { 
+        transform: translateY(0) rotate(0deg); 
+        opacity: 1; 
+    }
+    100% { 
+        transform: translateY(-100vh) rotate(360deg); 
+        opacity: 0; 
+    }
+}
+
+.success-message {
+    color: white;
+    font-size: 2.5em;
+    text-align: center;
+    padding: 40px;
+    animation: fadeIn 1s ease-in;
+    text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.5em;
+    }
+    
+    .subtitle {
+        font-size: 1em;
+    }
+    
+    button {
+        padding: 15px 30px;
+        font-size: 18px;
+    }
+    
+    .container {
+        padding: 40px 25px;
+    }
+    
+    .success-message {
+        font-size: 1.8em;
+        padding: 20px;
+    }
 }
 </style>
 </head>
 <body>
+    <div class="stars" id="stars"></div>
+    
     <div class="container">
         <h1>¿Quieres ser mi San Valentín? 💖</h1>
-        <button id="yes">Sí 💕</button>
-        <button id="no">No 😒</button>
+        <p class="subtitle">Eres la luz que ilumina mis días ✨</p>
+        <div class="button-container">
+            <button id="yes">Sí, acepto 💕</button>
+            <button id="no">No, gracias 😔</button>
+        </div>
     </div>
 
     <script>
         const noBtn = document.getElementById("no");
         const yesBtn = document.getElementById("yes");
+        
+        // Crear estrellas de fondo
+        function createStars() {
+            const starsContainer = document.getElementById("stars");
+            for(let i = 0; i < 100; i++) {
+                const star = document.createElement("div");
+                star.classList.add("star");
+                star.style.width = Math.random() * 3 + "px";
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + "%";
+                star.style.top = Math.random() * 100 + "%";
+                star.style.animationDelay = Math.random() * 3 + "s";
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
 
-        noBtn.addEventListener("mouseover", function(){
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * window.innerWidth;
+        // Mover el botón "No" cuando se acerquen
+        function moveNoButton() {
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+            
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+            
             noBtn.style.left = x + "px";
-            noBtn.style,top = y + "px";
-        }),
+            noBtn.style.top = y + "px";
+        }
 
+        // Para computadora - se mueve cuando el mouse se acerca
+        noBtn.addEventListener("mouseenter", moveNoButton);
+        
+        // Para teléfono - detectar cuando el dedo se acerca
+        let lastTouch = 0;
+        document.addEventListener("touchmove", function(e) {
+            const touch = e.touches[0];
+            const noBtnRect = noBtn.getBoundingClientRect();
+            
+            // Calcular distancia entre el dedo y el botón
+            const distance = Math.sqrt(
+                Math.pow(touch.clientX - (noBtnRect.left + noBtnRect.width/2), 2) +
+                Math.pow(touch.clientY - (noBtnRect.top + noBtnRect.height/2), 2)
+            );
+            
+            // Si el dedo está cerca (menos de 100px), mover el botón
+            if(distance < 100 && Date.now() - lastTouch > 200) {
+                moveNoButton();
+                lastTouch = Date.now();
+            }
+        });
+        
+        // También mover si intentan tocarlo directamente
+        noBtn.addEventListener("touchstart", function(e) {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        // Cuando acepta
         yesBtn.addEventListener("click", function() {
-    document.body.innerHTML = "<h1 style='color:white;'>Sabía que dirías que sí 💖 Te amo demasiado ❤️</h1>";
-    createHearts();
-});
+            document.body.innerHTML = "<h1 class='success-message'>¡Sabía que dirías que sí! 💖<br>Eres mi persona favorita en todo el mundo 🌟</h1>";
+            createHearts();
+        });
 
-function createHearts() {
-    setInterval(() => {
-        const heart = document.createElement("div");
-        heart.classList.add("heart");
-        heart.innerHTML = "❤️";
-        heart.style.left = Math.random() * window.innerWidth + "px";
-        document.body.appendChild(heart);
-
-         setTimeout(() => {
-            heart.remove();
-        }, 3000);
-    }, 200);
-}
+        // Crear corazones flotantes
+        function createHearts() {
+            setInterval(() => {
+                const heart = document.createElement("div");
+                heart.classList.add("heart");
+                heart.innerHTML = "❤️";
+                heart.style.left = Math.random() * window.innerWidth + "px";
+                heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000);
+            }, 300);
+        }
     </script>
 </body>
 </html>
